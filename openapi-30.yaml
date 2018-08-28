@@ -110,6 +110,19 @@ components:
       description: Something went wrong on PagerTree's servers. (These are rare).
 
   schemas:
+    Base:
+      type: "object"
+      properties:
+        sid:
+          type: "string"
+          pattern: '^acc_[a-zA-Z0-9-_]{7,14}$'
+        createdAt:
+          type: "string"
+          format: "date-time"
+        updatedAt:
+          type: "string"
+          format: "date-time"
+
     IntegrationsArray:
       type: "array"
       items:
@@ -159,18 +172,10 @@ components:
           type: "boolean"
     Integration:
       allOf:
-        - $ref: '#/components/schemas/IntegrationBase'
         - type: "object"
           properties:
-            sid:
-              type: "string"
-              pattern: '^acc_[a-zA-Z0-9-_]{7,14}$'
             id:
               type: "string"
               pattern: '^int_[a-zA-Z0-9-_]{7,14}$'
-            createdAt:
-              type: "string"
-              format: "date-time"
-            updatedAt:
-              type: "string"
-              format: "date-time"
+        - $ref: '#/components/schemas/Base'
+        - $ref: '#/components/schemas/IntegrationBase'

@@ -198,6 +198,44 @@ components:
             stripe_customer:
               type: "object"
 
+    AlertArray:
+      type: "array"
+      items:
+        $ref: '#/components/schemas/Alert'
+    AlertBase:
+      type: "object"
+      properties:
+        user_id:
+          type: "string"
+          pattern: '^usr_[a-zA-Z0-9-_]{7,14}$'
+        channels:
+          type: "array"
+          items:
+            type: "string"
+            enum:
+            - "push"
+            - "email"
+            - "sms"
+            - "voice"
+            - "slack"
+        type:
+          type: "string"
+        template:
+          type: "string"
+        data:
+          type: "array"
+          items:
+            type: "object"
+    Alert:
+      allOf:
+        - type: "object"
+          properties:
+            id:
+              type: "string"
+              pattern: '^alt_[a-zA-Z0-9-_]{7,14}$'
+        - $ref: '#/components/schemas/Base'
+        - $ref: '#/components/schemas/AlertBase'
+
     IntegrationsArray:
       type: "array"
       items:

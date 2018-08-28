@@ -123,6 +123,31 @@ components:
           type: "string"
           format: "date-time"
 
+    Account:
+      allOf:
+        - type: "object"
+          properties:
+            id:
+              type: "string"
+              pattern: '^acc_[a-zA-Z0-9-_]{7,14}$'
+        - $ref: '#/components/schemas/Base'
+        - type: "object"
+          properties:
+            active:
+              type: "boolean"
+            name:
+              type: "string"
+            token_id:
+              type: "string"
+            hippanotifications:
+              type: "boolean"
+            stripe_customer_id:
+              type: "string"
+            stripe_subscription:
+              type: "object"
+            stripe_customer:
+              type: "object"
+
     IntegrationsArray:
       type: "array"
       items:

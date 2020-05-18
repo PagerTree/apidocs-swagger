@@ -282,7 +282,7 @@ components:
               additionalProperties:
                 type: string
 
-    IntegrationsArray:
+    ArrayIntegration:
       type: "array"
       items:
         $ref: "#/components/schemas/Integration"
@@ -291,9 +291,7 @@ components:
       type: "object"
       properties:
         data:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/Integration"
+          $ref: "#/components/schemas/ArrayIntegration"
         has_more:
           type: "boolean"
         total_count:

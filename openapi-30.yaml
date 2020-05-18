@@ -491,6 +491,156 @@ paths:
         "5XX":
           $ref: "#/components/responses/InternalServerError"
 
+  /user:
+    post:
+      summary: "Create a User"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserBase"
+
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    get:
+      summary: "List all Users"
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
+        - $ref: "#/components/parameters/page"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedUsers"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+
+  /user/{id}:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    get:
+      summary: "Retrieve a User"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      summary: "Update a User"
+      responses:
+        "200":
+          description: Success - The resource was updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      summary: "Delete a User"
+      responses:
+        "204":
+          $ref: "#/components/responses/Delete204"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/Delete404"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+  /user/{id}/add-to-teams:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    post:
+      summary: "Add a user to multiple teams"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                team_ids:
+                  type: array
+                  items:
+                    type: string
+                    description: 'The teams ids to add the user to.'
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+
 components:
   securitySchemes:
     APIKey:
@@ -974,6 +1124,142 @@ components:
               additionalProperties:
                 type: string
 
+    UserBase:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "The name of the user."
+        emails:
+          type: "array"
+          description: "Array of email objects for the user."
+          items:
+            type: "object"
+            properties:
+              email:
+                type: string
+                description: "The email address of the user."
+              verified:
+                type: number
+                description: "Unix timestamp of when the email was verified."
+              blocked:
+                type: boolean
+                description: "Flag indicating if this email is blocked."
+              updatedat:
+                type: number
+                description: "Unix timestamp of the last time this email was updated."
+              verificationcode:
+                type: string
+                readOnly: true
+                description: "Encrypted verification code"
+              verficationcode_updatedat:
+                type: number
+                description: "Unix timestamp of the last time the verification code was generated at."
+          minItems: 1
+
+    User:
+      allOf:
+        - $ref: "#/components/schemas/Base"
+        - $ref: "#/components/schemas/UserBase"
+        - type: "object"
+          properties:
+            avatar:
+              type: string
+              description: "The url of the users avatar"
+            phones:
+              type: "array"
+              description: "Array of phone object for the user."
+              items:
+                type: "object"
+                properties:
+                  phone:
+                    type: string
+                    description: "The ISO phone number of the user."
+                  country:
+                    type: string
+                    description: "The ISO country code of the phone number."
+                  verified:
+                    type: number
+                    description: "Unix timestamp of when the phone was verified."
+                  blocked:
+                    type: boolean
+                    description: "Flag indicating if this phone is blocked."
+                  updatedat:
+                    type: number
+                    description: "Unix timestamp of the last time this phone was updated."
+                  verificationcode:
+                    type: string
+                    readOnly: true
+                    description: "Encrypted verification code"
+                  verficationcode_updatedat:
+                    type: number
+                    description: "Unix timestamp of the last time the verification code was generated at."
+                  sms_enabled:
+                    type: boolean
+                    description: "Flag indicating if this number has sms enabled"
+                  voice_enabled:
+                    type: boolean
+                    description: "Flag indicating if this number has voice enabled"
+            password:
+              type: string
+              description: "Encrypted password"
+            slack:
+              type: object
+              readOnly: true
+              description: 'The users Slack connection information'
+            router_id:
+              type: string
+              description: "The notification rules router id"
+            preferences:
+              type: object
+              description: "User preferences"
+              properties:
+                alert_push:
+                  type: boolean
+                  description: "Alert via push by default?"
+                alert_email:
+                  type: boolean
+                  description: "Alert via email by default?"
+                alert_sms:
+                  type: boolean
+                  description: "Alert via sms by default?"
+                alert_voice:
+                  type: boolean
+                  description: "Alert via voice by default?"
+                alert_slack:
+                  type: boolean
+                  description: "Alert via Slack by default?"
+                advanced_mode:
+                  type: boolean
+                  description: "Show advanced mode in the GUI?"
+                debug_mode:
+                  type: boolean
+                  description: "Show debug mode in the GUI?"
+                locale:
+                  type: string
+                  description: "The language locale."
+                timezone:
+                  type: string
+                  description: "The users preferred timezeone."
+                moment_format:
+                  type: string
+                  description: "The moment.js format string the user likes to see dates in."
+                ui_calendar_firstday:
+                  type: number
+                  description: "The ISO day of the week that the user likes to see as the first day of the week"
+            roles:
+              type: object
+              properties:
+                broadcast:
+                  type: boolean
+                  description: "Should the user be allowed to create broadcasts?"
+                admin:
+                  type: boolean
+                  description: "Is this user an admin over the PagerTree account?"
+                admin_billing:
+                  type: boolean
+                  description: "Should this user be able to see billing details?"
+
     ArrayAlert:
       type: "array"
       items:
@@ -983,6 +1269,11 @@ components:
       type: "array"
       items:
         $ref: "#/components/schemas/Integration"
+
+    ArrayUser:
+      type: "array"
+      items:
+        $ref: "#/components/schemas/User"
 
     PaginatedAlerts:
       type: "object"
@@ -999,6 +1290,16 @@ components:
       properties:
         data:
           $ref: "#/components/schemas/ArrayIntegration"
+        has_more:
+          type: "boolean"
+        total_count:
+          type: "number"
+
+    PaginatedUsers:
+      type: "object"
+      properties:
+        data:
+          $ref: "#/components/schemas/ArrayUser"
         has_more:
           type: "boolean"
         total_count:

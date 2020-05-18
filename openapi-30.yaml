@@ -19,7 +19,7 @@ security:
 paths:
   /integration:
     post:
-      summary: "Create an integration"
+      summary: "Create an Integration"
       requestBody:
         required: true
         content:
@@ -34,8 +34,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Integration"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
     get:
-      summary: "List integrations"
+      summary: "List all Integrations"
       parameters:
         - $ref: "#/components/parameters/limit"
         - $ref: "#/components/parameters/offset"
@@ -47,12 +57,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PaginatedIntegrations"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
 
   /integration/{id}:
     parameters:
       - $ref: "#/components/parameters/id"
     get:
-      summary: "Get an integration"
+      summary: "Retrieve an Integration"
       responses:
         "200":
           description: Success
@@ -60,26 +78,58 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Integration"
+        "400":
+          $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
     put:
-      summary: "Update an integration"
+      summary: "Update an Integration"
       responses:
         "200":
-          description: Success
+          description: Success - The resource was updated successfully.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Integration"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
     delete:
       summary: "Delete an integration"
       responses:
         "204":
-          description: Success
+          $ref: "#/components/responses/Delete204"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
         "404":
-          description: Fail
+          $ref: "#/components/responses/Delete404"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
 
 components:
   securitySchemes:
@@ -120,19 +170,23 @@ components:
 
   responses:
     BadRequest:
-      description: The request was unacceptable, often due to a missing required parameter.
+      description: Bad Request- The request was unacceptable, often due to a missing required parameter.
     Unauthorized:
-      description: A valid JWT token was not provided.
+      description: Unauthorized - A valid JWT token or API Key + Secret was not provided.
     Forbidden:
-      description: You don't have access to the resource requested.
+      description: Forbidden - You don't have access to the resource requested.
     NotFound:
-      description: The specified resource does not exist.
+      description: Not Found - The specified resource does not exist.
     Conflict:
-      description: The request conflicts with another request (perhaps using the same id or key).
+      description: Conflict - The request conflicts with another request (perhaps using the same id or key).
     TooManyRequests:
-      description: Too many request hit the API too quickly. We recommend an exponential backoff.
+      description: Too Many Requests - Too many request hit the API too quickly. We recommend an exponential backoff.
     InternalServerError:
-      description: Something went wrong on PagerTree's servers. (These are rare).
+      description: Internal Server Error - Something went wrong on PagerTree's servers. (These are rare).
+    Delete204:
+      description: Success - The resource was deleted successfully.
+    Delete404:
+      description: Failure - There was an error deleting the resource.
 
   schemas:
     Base:

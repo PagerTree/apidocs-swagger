@@ -5,64 +5,28 @@ info:
   description: "This is the Swagger definition file for <a href=\"https://apidocs.pagertree.com\">https://apidocs.pagertree.com</a>. Use this file to generate SDKs."
   version: 1.0.0
 
+externalDocs:
+  description: API Documentation
+  url: https://apidocs.pagertree.com
+
 servers:
   - url: https://api.pagertree.com
 
 security:
   - BearerAuth: []
+  - APIKey: []
 
 paths:
-  /account/{id}:
-    get:
-      summary: "Get"
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Account'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-    put:
-      summary: "Update"
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Account'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '409':
-          $ref: '#/components/responses/Conflict'
-
   /integration:
     post:
-      summary: "Create"
+      summary: "Create an integration"
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/IntegrationBase'
+
       responses:
         '200':
           description: Success
@@ -70,12 +34,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Integration'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '409':
-          $ref: '#/components/responses/Conflict'
     get:
       summary: "List"
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
+        - $ref: "#/components/parameters/page"
       responses:
         '200':
           description: Success
@@ -119,10 +83,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Integration'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '409':
-          $ref: '#/components/responses/Conflict'
     delete:
       summary: "Delete"
       parameters:
@@ -139,9 +99,34 @@ paths:
 
 components:
   securitySchemes:
+    APIKey:
+      type: apiKey
+      description: API key to authorize request
+      name: x-api-key
+      in: header
     BearerAuth:
       type: http
       scheme: bearer
+
+  parameters:
+    limit:
+      name: limit
+      in: query
+      description: "A limit on the number of objects to be returned, between 1 and 100"
+      schema:
+        type: "number"
+    offset:
+      name: offset
+      in: query
+      description: "A cursor to use in pagination. The number of elements to skip."
+      schema:
+        type: "number"
+    page:
+      name: page
+      in: query
+      description: "A cursor to use in pagination. Uses the limit to calculate current offset"
+      schema:
+        type: "number"
 
   responses:
     BadRequest:
@@ -163,9 +148,16 @@ components:
     Base:
       type: "object"
       properties:
-        sid:
+        sid: 
           type: "string"
-          pattern: '^acc_[a-zA-Z0-9-_]{7,14}$'
+        id: 
+          type: "string"
+        meta:
+          type: "object"
+          additionalProperties:
+            type: "string"
+        tinyId:
+          type: "number"
         createdAt:
           type: "string"
           format: "date-time"
@@ -173,122 +165,94 @@ components:
           type: "string"
           format: "date-time"
 
-    Account:
-      allOf:
-        - type: "object"
-          properties:
-            id:
-              type: "string"
-              pattern: '^acc_[a-zA-Z0-9-_]{7,14}$'
-        - $ref: '#/components/schemas/Base'
-        - type: "object"
-          properties:
-            active:
-              type: "boolean"
-            name:
-              type: "string"
-            token_id:
-              type: "string"
-            hippanotifications:
-              type: "boolean"
-            stripe_customer_id:
-              type: "string"
-            stripe_subscription:
-              type: "object"
-            stripe_customer:
-              type: "object"
+    AlertUrgency:
+      type: "string"
+      enum:
+      - low
+      - medium
+      - high
+      - critical
+      default: medium
 
-    AlertArray:
-      type: "array"
-      items:
-        $ref: '#/components/schemas/Alert'
-    AlertBase:
-      type: "object"
-      properties:
-        user_id:
-          type: "string"
-          pattern: '^usr_[a-zA-Z0-9-_]{7,14}$'
-        channels:
-          type: "array"
-          items:
-            type: "string"
-            enum:
-            - "push"
-            - "email"
-            - "sms"
-            - "voice"
-            - "slack"
-        type:
-          type: "string"
-        template:
-          type: "string"
-        data:
-          type: "array"
-          items:
-            type: "object"
-    Alert:
-      allOf:
-        - type: "object"
-          properties:
-            id:
-              type: "string"
-              pattern: '^alt_[a-zA-Z0-9-_]{7,14}$'
-        - $ref: '#/components/schemas/Base'
-        - $ref: '#/components/schemas/AlertBase'
+    IntegrationType:
+      type: "string"
+      enum:
+      - amazonwebservices
+      - apexping
+      - appdynamics
+      - cronitorio
+      - datadog
+      - deadmanssnitch
+      - elastalert
+      - email
+      - freshdesk
+      - freshservice
+      - grafana
+      - healthchecksio
+      - hyperping
+      - jiraserver
+      - jotform
+      - kapacitor
+      - newrelic
+      - outgoingwebhook
+      - pingdom
+      - prometheus
+      - prtg
+      - serverguard24
+      - site24x7
+      - slackoutgoingwebhook
+      - solarwinds
+      - stackdriver
+      - statuscake
+      - twilio_livecallrouting
+      - typeform
+      - uptime
+      - uptimerobot
+      - webhook
+      - zendesk
 
-    IntegrationsArray:
-      type: "array"
-      items:
-        $ref: '#/components/schemas/Integration'
     IntegrationBase:
       type: "object"
       properties:
         name:
           type: "string"
         type:
-          type: "string"
-          enum:
-          - "amazonwebservices"
-          - "apexping"
-          - "appdynamics"
-          - "cronitorio"
-          - "datadog"
-          - "deadmanssnitch"
-          - "email"
-          - "freshservice"
-          - "grafana"
-          - "healthchecksio"
-          - "jiraserver"
-          - "jotform"
-          - "newrelic"
-          - "outgoingwebhook"
-          - "pingdom"
-          - "prometheus"
-          - "site24x7"
-          - "slackoutgoingwebhook"
-          - "solarwinds"
-          - "statuscake"
-          - "typeform"
-          - "webhook"
-          - "zendesk"
-        d_team_id:
-          type: "string"
-          pattern: '^tem_[a-zA-Z0-9-_]{7,14}$'
+          $ref: '#/components/schemas/IntegrationType'
         urgency:
-          type: "string"
-          enum:
-          - "low"
-          - "medium"
-          - "high"
-          - "critical"
-        enabled:
-          type: "boolean"
+          $ref: '#/components/schemas/AlertUrgency'
+        destination_ids:
+          type: "array"
+          items:
+            type: string
+
     Integration:
       allOf:
-        - type: "object"
-          properties:
-            id:
-              type: "string"
-              pattern: '^int_[a-zA-Z0-9-_]{7,14}$'
         - $ref: '#/components/schemas/Base'
         - $ref: '#/components/schemas/IntegrationBase'
+        - type: "object"
+          properties:
+            enabled:
+              type: boolean   
+            options:
+              type: "object"
+              additionalProperties:
+                type: string
+
+    
+    IntegrationsArray:
+      type: "array"
+      items:
+        $ref: '#/components/schemas/Integration'
+
+    PaginatedIntegrations:
+      type: "object"
+      properties:
+        data:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Integration"
+        has_more:
+          type: "boolean"
+        total_count:
+          type: "number"
+        

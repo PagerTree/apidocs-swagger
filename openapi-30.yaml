@@ -2,7 +2,7 @@ openapi: 3.0.0
 
 info:
   title: PagerTree API YAML
-  description: "This is the Swagger definition file for <a href=\"https://apidocs.pagertree.com\">https://apidocs.pagertree.com</a>. Use this file to generate SDKs."
+  description: 'This is the Swagger definition file for <a href="https://apidocs.pagertree.com">https://apidocs.pagertree.com</a>. Use this file to generate SDKs.'
   version: 1.0.0
 
 externalDocs:
@@ -25,76 +25,60 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/IntegrationBase'
+              $ref: "#/components/schemas/IntegrationBase"
 
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Integration'
+                $ref: "#/components/schemas/Integration"
     get:
-      summary: "List"
+      summary: "List integrations"
       parameters:
         - $ref: "#/components/parameters/limit"
         - $ref: "#/components/parameters/offset"
         - $ref: "#/components/parameters/page"
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IntegrationsArray'
+                $ref: "#/components/schemas/PaginatedIntegrations"
 
   /integration/{id}:
+    parameters:
+      - $ref: "#/components/parameters/id"
     get:
-      summary: "Get"
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
+      summary: "Get an integration"
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Integration'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                $ref: "#/components/schemas/Integration"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
     put:
-      summary: "Update"
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
+      summary: "Update an integration"
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Integration'
+                $ref: "#/components/schemas/Integration"
     delete:
-      summary: "Delete"
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
+      summary: "Delete an integration"
       responses:
-        '204':
+        "204":
           description: Success
-        '404':
+        "404":
           description: Fail
 
 components:
@@ -109,6 +93,12 @@ components:
       scheme: bearer
 
   parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
     limit:
       name: limit
       in: query
@@ -148,9 +138,9 @@ components:
     Base:
       type: "object"
       properties:
-        sid: 
+        sid:
           type: "string"
-        id: 
+        id:
           type: "string"
         meta:
           type: "object"
@@ -168,48 +158,48 @@ components:
     AlertUrgency:
       type: "string"
       enum:
-      - low
-      - medium
-      - high
-      - critical
+        - low
+        - medium
+        - high
+        - critical
       default: medium
 
     IntegrationType:
       type: "string"
       enum:
-      - amazonwebservices
-      - apexping
-      - appdynamics
-      - cronitorio
-      - datadog
-      - deadmanssnitch
-      - elastalert
-      - email
-      - freshdesk
-      - freshservice
-      - grafana
-      - healthchecksio
-      - hyperping
-      - jiraserver
-      - jotform
-      - kapacitor
-      - newrelic
-      - outgoingwebhook
-      - pingdom
-      - prometheus
-      - prtg
-      - serverguard24
-      - site24x7
-      - slackoutgoingwebhook
-      - solarwinds
-      - stackdriver
-      - statuscake
-      - twilio_livecallrouting
-      - typeform
-      - uptime
-      - uptimerobot
-      - webhook
-      - zendesk
+        - amazonwebservices
+        - apexping
+        - appdynamics
+        - cronitorio
+        - datadog
+        - deadmanssnitch
+        - elastalert
+        - email
+        - freshdesk
+        - freshservice
+        - grafana
+        - healthchecksio
+        - hyperping
+        - jiraserver
+        - jotform
+        - kapacitor
+        - newrelic
+        - outgoingwebhook
+        - pingdom
+        - prometheus
+        - prtg
+        - serverguard24
+        - site24x7
+        - slackoutgoingwebhook
+        - solarwinds
+        - stackdriver
+        - statuscake
+        - twilio_livecallrouting
+        - typeform
+        - uptime
+        - uptimerobot
+        - webhook
+        - zendesk
 
     IntegrationBase:
       type: "object"
@@ -217,9 +207,9 @@ components:
         name:
           type: "string"
         type:
-          $ref: '#/components/schemas/IntegrationType'
+          $ref: "#/components/schemas/IntegrationType"
         urgency:
-          $ref: '#/components/schemas/AlertUrgency'
+          $ref: "#/components/schemas/AlertUrgency"
         destination_ids:
           type: "array"
           items:
@@ -227,22 +217,21 @@ components:
 
     Integration:
       allOf:
-        - $ref: '#/components/schemas/Base'
-        - $ref: '#/components/schemas/IntegrationBase'
+        - $ref: "#/components/schemas/Base"
+        - $ref: "#/components/schemas/IntegrationBase"
         - type: "object"
           properties:
             enabled:
-              type: boolean   
+              type: boolean
             options:
               type: "object"
               additionalProperties:
                 type: string
 
-    
     IntegrationsArray:
       type: "array"
       items:
-        $ref: '#/components/schemas/Integration'
+        $ref: "#/components/schemas/Integration"
 
     PaginatedIntegrations:
       type: "object"
@@ -255,4 +244,3 @@ components:
           type: "boolean"
         total_count:
           type: "number"
-        

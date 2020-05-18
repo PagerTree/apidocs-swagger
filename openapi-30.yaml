@@ -83,6 +83,299 @@ paths:
         "5XX":
           $ref: "#/components/responses/InternalServerError"
 
+  /alert:
+    post:
+      summary: "Create an Alert"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AlertBase"
+
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alert"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    get:
+      summary: "List all Alerts"
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
+        - $ref: "#/components/parameters/page"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedAlerts"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+  /alert/mass-action:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    post:
+      summary: "Perform a mass action on many alerts"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  description: "The id of the user or team the alert should be handed off to."
+                  enum:
+                    - acknowledge
+                    - reject
+                    - resolve
+                    - delete
+                    - archive
+                alert_ids:
+                  type: array
+                  items:
+                    type: string
+                    description: 'The alert ids to perform the action on.'
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alert"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+
+  /alert/{id}:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    get:
+      summary: "Retrieve an Alert"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alert"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      summary: "Update an Alert"
+      responses:
+        "200":
+          description: Success - The resource was updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alert"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      summary: "Delete an Alert"
+      responses:
+        "204":
+          $ref: "#/components/responses/Delete204"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/Delete404"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+  
+  /alert/{id}/acknowledge:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    post:
+      summary: "Acknowledge an Alert"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alert"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+
+  /alert/{id}/reject:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    post:
+      summary: "Reject an Alert"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alert"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+
+  /alert/{id}/resolve:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    post:
+      summary: "Resolve an Alert"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alert"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+
+  /alert/{id}/archive:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    post:
+      summary: "Archive an Alert"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alert"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+
+  /alert/{id}/handoff:
+    parameters:
+        - $ref: "#/components/parameters/id"
+    post:
+      summary: "Handoff an Alert"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                to:
+                  type: string
+                  description: "The id of the user or team the alert should be handed off to."
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alert"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
 
   /integration:
     post:
@@ -277,6 +570,7 @@ components:
             type: "string"
         tinyId:
           type: "number"
+          description: "Human friendly id."
         createdAt:
           type: "string"
           format: "date-time"
@@ -285,6 +579,80 @@ components:
           type: "string"
           format: "date-time"
           description: "Timestamp when this object was last updated."
+
+    AlertType:
+      type: "string"
+      description: "The alert type."
+      enum:
+        - admin
+        - alert
+        - event
+        - campaign
+        - billing
+        - selfservice
+      default: alert
+
+    AlertSubtype:
+      type: "string"
+      description: "The alert subtype."
+      enum:
+        - alert
+        - broadcast
+        - page
+        - handoff
+        - stakeholder
+        - feedback
+        - rejected
+        - resolved
+        - acknowledged
+        - timeout
+        - dropped
+        - voicemail
+        - goc
+        - welcome
+        - followup
+        - card_expiring
+        - charge_succeeded
+        - charge_failed
+        - credit_expired
+        - credit_recharge
+        - credit_shortage
+        - trial_ending
+        - trial_ended
+        - subscription_deleted
+        - verify_email
+        - verify_phone
+        - invite
+        - forgot_password
+        - reset_password
+        - unknown_email
+        - integration_alert_create_throttled
+        - integration_request_throttled
+      default: alert
+
+    AlertStatus:
+      type: "string"
+      description: "Options for alert status."
+      enum:
+        - open
+        - acknowledged
+        - resolved
+        - dropped
+        - archived
+        - suppressed
+        - aggregating
+        - routable
+        - errored
+
+    AlertSeverity:
+      type: "string"
+      description: "Options for alert severity."
+      enum:
+        - SEV-1
+        - SEV-2
+        - SEV-3
+        - SEV-4
+        - SEV-5
 
     AlertUrgency:
       type: "string"
@@ -437,6 +805,146 @@ components:
         - $ref: "#/components/schemas/Base"
         - $ref: "#/components/schemas/AccountBase"
 
+    AlertBase:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "The name of the account."
+        destination_ids:
+          type: "array"
+          description: "Where to route the alert to. Should be team, router, or user id."
+          items:
+            type: string
+        title:
+          type: string
+          description: "The title of the alert."
+        
+    Alert:
+      allOf:
+        - $ref: "#/components/schemas/Base"
+        - $ref: "#/components/schemas/AlertBase"
+        - type: "object"
+          properties:
+            parent_id:
+              type: string
+              description: "Parent alert id - For grouping and aggregating."
+            thirdparty_id:
+              type: string
+              description:  "This is set by PagerTree integration during the alert transformation process."
+            description:
+              type: string
+              description: "The description of the alert."
+            type:
+              $ref: '#/components/schemas/AlertType'
+            subtype:
+              $ref: '#/components/schemas/AlertSubtype'
+            status:
+              $ref: '#/components/schemas/AlertStatus'
+            urgency:
+              $ref: '#/components/schemas/AlertUrgency'
+            d_team_id:
+              type: string
+              description: "The team id this alert is assigned to."
+              readOnly: true
+            d_user_id:
+              type: string
+              description: "The user id this alert is assigned to."
+              readOnly: true
+            s_log_id:
+              type: string
+              description: "The log id (if any) that created this alert."
+              readOnly: true
+            created:
+              type: number
+              description: "The unix timestamp this alert was created."
+              readOnly: true
+            acknowledged:
+              type: number
+              description: "The unix timestamp this alert was acknowledged."
+              readOnly: true
+            acknowledgeby:
+              type: string
+              description: "The id of the object that acknowledged this alert."
+              readOnly: true
+            resolved:
+              type: number
+              description: "The unix timestamp this alert was resolved."
+              readOnly: true
+            resolvedby:
+              type: string
+              description: "The id of the object that resolved this alert."
+              readOnly: true
+            archived:
+              type: number
+              description: "The unix timestamp this alert was archived."
+              readOnly: true
+            archivedby:
+              type: string
+              description: "The id of the object that archived this alert."
+              readOnly: true
+            livecall:
+              type: string
+              description: "The Twilio Queue Id of the waiting call."
+              readOnly: true
+            source_id:
+              type: string
+              description: "The id of the user or integration that created this alert."
+            response_requested:
+              type: boolean
+              description: "For broadcasts, falg indicating if a response was requested."
+              default: false
+            tags:
+              type: "array"
+              description: "An array of strings. Each represents a tag."
+              items:
+                type: string
+            additional_data:
+              type: "array"
+              description: "An array of objects containing additional data from an integration."
+              items:
+                type: object
+                properties:
+                  type:
+                    type: "string"
+                    enum:
+                      - text
+                      - link
+                      - img
+                      - email
+                      - email[]
+                  label:
+                    type: string
+                  value:
+                    type: string
+            stakeholder_ids:
+              type: array
+              description: "An array of stakeholder ids."
+              items:
+                type: string
+            handoffs:
+              type: array 
+              description: "An array of objects contain information regargind handoffs"
+              readOnly: true
+              items:
+                type: object
+                properties:
+                  to: 
+                    type: string
+                    description: "The id that the alert is being handed off to."
+                  from:
+                    type: string
+                    description: "The user id that is handing off the alert."
+                  time:
+                    description: "The unix timestamp that the handoff occured."
+                    type: number
+                  acknowledged:
+                    description: "The unix timestamp that the previous workflow was acknowledged"
+                    type: number
+            bridge_id:  
+              type: string
+              description: "The id of the bridge that is attached to this bridge"
+
     IntegrationBase:
       type: "object"
       properties:
@@ -466,10 +974,25 @@ components:
               additionalProperties:
                 type: string
 
+    ArrayAlert:
+      type: "array"
+      items:
+        $ref: "#/components/schemas/Alert"
+
     ArrayIntegration:
       type: "array"
       items:
         $ref: "#/components/schemas/Integration"
+
+    PaginatedAlerts:
+      type: "object"
+      properties:
+        data:
+          $ref: "#/components/schemas/ArrayAlert"
+        has_more:
+          type: "boolean"
+        total_count:
+          type: "number"
 
     PaginatedIntegrations:
       type: "object"

@@ -13,10 +13,77 @@ servers:
   - url: https://api.pagertree.com
 
 security:
-  - BearerAuth: []
   - APIKey: []
+    APISecret: []
+  - JWT: []
 
 paths:
+  /account/{id}:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    get:
+      summary: "Retrieve an Account"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      summary: "Update an Account"
+      responses:
+        "200":
+          description: Success - The resource was updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      summary: "Delete an Account - DANGER - This will delete all the resources under this account."
+      responses:
+        "204":
+          $ref: "#/components/responses/Delete204"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/Delete404"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+
+
   /integration:
     post:
       summary: "Create an Integration"
@@ -114,7 +181,7 @@ paths:
         "5XX":
           $ref: "#/components/responses/InternalServerError"
     delete:
-      summary: "Delete an integration"
+      summary: "Delete an Integration"
       responses:
         "204":
           $ref: "#/components/responses/Delete204"
@@ -138,7 +205,12 @@ components:
       description: API key to authorize request
       name: x-api-key
       in: header
-    BearerAuth:
+    APISecret:
+      type: apiKey
+      description: API secrete to authorize request
+      name: x-api-secret
+      in: header
+    JWT:
       type: http
       scheme: bearer
 
@@ -194,10 +266,13 @@ components:
       properties:
         sid:
           type: "string"
+          description: "Security identifier for the object."
         id:
           type: "string"
+          description: "Unique identifier for the object."
         meta:
           type: "object"
+          description: "Free form metadata."
           additionalProperties:
             type: "string"
         tinyId:
@@ -205,12 +280,15 @@ components:
         createdAt:
           type: "string"
           format: "date-time"
+          description: "Timestamp when this object was first created."
         updatedAt:
           type: "string"
           format: "date-time"
+          description: "Timestamp when this object was last updated."
 
     AlertUrgency:
       type: "string"
+      description: "Options for alert urgency."
       enum:
         - low
         - medium
@@ -220,6 +298,7 @@ components:
 
     IntegrationType:
       type: "string"
+      description: "Options for integration type."
       enum:
         - amazonwebservices
         - apexping
@@ -255,17 +334,122 @@ components:
         - webhook
         - zendesk
 
+    NotificationTemplate:
+      type: object
+      properties:
+        push:
+          type: object
+          properties:
+            subject:
+              type: string
+              description: "The subject template to substitute. Goes to title of push notification."
+            message:
+              type: string
+              description: "The message template to substitute. Goes to body of push notifcation."
+        email:
+          type: object
+          properties:
+            subject:
+              type: string
+              description: "The subject template to substitute. This is the email subject."
+            message:
+              type: string
+              description: "The message template to substitute. This is the email body."
+        sms:
+          type: object
+          properties:
+            message:
+              type: string
+              description: "The message template to substitute. This is the SMS body."
+        voice:
+          type: object
+          properties:
+            message:
+              type: string
+              description: "The message template to substitute. The text that will be read to the user."
+            acknowledge:
+              type: number
+              description: "The dial tone number that acknowledges the alert."
+            reject:
+              type: number
+              description: "The dial tone number that rejects the alert."
+
+    AccountBase:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "The name of the account."
+        token_id: 
+          type: "string"
+          description: "The unique identifier of the token to use for invites to join the account."
+        stripe:
+          type: "object"
+          description: "The Stripe customer / subscription"
+          readOnly: true
+          properties:
+            customer:
+              type: object
+            subscription:
+              type: object
+        sso:
+          type: object
+          description: "Single Sign On settings"
+          properties:
+            enabled:
+              type: boolean
+            type:
+              type: string
+            saml_url:
+              type: string
+            issuer_url:
+              type: string
+            saml_x509:
+              type: string
+            tenant_id:
+              type: string
+        notification_templates:
+          type: object
+          description: "Notification templates for the different notification alert.subtype"
+          properties:
+            alert_acknowledged:
+              $ref: '#/components/schemas/NotificationTemplate'
+            alert_alert:
+              $ref: '#/components/schemas/NotificationTemplate'
+            alert_broadcast:
+              $ref: '#/components/schemas/NotificationTemplate'
+            alert_dropped:
+              $ref: '#/components/schemas/NotificationTemplate'
+            alert_handoff:
+              $ref: '#/components/schemas/NotificationTemplate'
+            alert_page:
+              $ref: '#/components/schemas/NotificationTemplate'
+            alert_rejected:
+              $ref: '#/components/schemas/NotificationTemplate'
+            alert_stakeholder:
+              $ref: '#/components/schemas/NotificationTemplate'
+            alert_timeout:
+              $ref: '#/components/schemas/NotificationTemplate'
+            event_goc:
+              $ref: '#/components/schemas/NotificationTemplate'
+    Account:
+      allOf:
+        - $ref: "#/components/schemas/Base"
+        - $ref: "#/components/schemas/AccountBase"
+
     IntegrationBase:
       type: "object"
       properties:
         name:
           type: "string"
+          description: "The name of the integration."
         type:
           $ref: "#/components/schemas/IntegrationType"
         urgency:
           $ref: "#/components/schemas/AlertUrgency"
         destination_ids:
           type: "array"
+          description: "Where to route the alert to."
           items:
             type: string
 

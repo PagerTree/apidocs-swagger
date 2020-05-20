@@ -377,6 +377,144 @@ paths:
         "5XX":
           $ref: "#/components/responses/InternalServerError"
 
+  /automation:
+    post:
+      summary: "Create an Automation"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AutomationBase"
+
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Automation"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    get:
+      summary: "List all Automtions"
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
+        - $ref: "#/components/parameters/page"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedAutomations"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+
+  /automation/{id}:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    get:
+      summary: "Retrieve an Automation"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Automation"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      summary: "Update an Automation"
+      responses:
+        "200":
+          description: Success - The resource was updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Automation"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      summary: "Delete an Automation"
+      responses:
+        "204":
+          $ref: "#/components/responses/Delete204"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/Delete404"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+  /automation/{id}/run:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    post:
+      summary: "Run an automation"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Log"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+  
   /event:
     post:
       summary: "Create an Event"
@@ -605,6 +743,80 @@ paths:
         "5XX":
           $ref: "#/components/responses/InternalServerError"
 
+  /log:
+    post:
+      summary: "Create a Log"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LogBase"
+
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Router"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    get:
+      summary: "List all logs"
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
+        - $ref: "#/components/parameters/page"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedLogs"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+
+  /log/{id}:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    get:
+      summary: "Retrieve a Log"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Router"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+  
   /router:
     post:
       summary: "Create a Router"
@@ -1555,6 +1767,36 @@ components:
         - webhook
         - zendesk
 
+    LogType:
+      type: "string"
+      description: "Options for log type."
+      enum:
+        - "log"
+        - "response"
+        - "feedback"
+        - "router"
+      default: "log"
+
+    LogSubtype:
+      type: "string"
+      description: "Options for log subtype."
+      enum:
+        - "INCOMING"
+        - "OUTGOING"
+      default: "OUTGOING"
+
+    LogLevel:
+      type: "number"
+      description: "Options for log level."
+      enum:
+        - 0 # ERROR
+        - 1 # WARN
+        - 2 # INFO
+        - 3 # VERBOSE
+        - 4 # DEBUG
+        - 5 # SILLY
+      default: 2
+    
     RouterType:
       type: "string"
       description: "Options for router type."
@@ -1824,6 +2066,25 @@ components:
               type: string
               description: "The id of the bridge that is attached to this bridge"
 
+    AutomationBase:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "The name of the automation."
+        enabled:
+          type: boolean
+          description: "Is this automation enabled?"
+          default: true
+        settings:
+          type: "string"
+          description: "YAML definition of the automation. See documentation for details: https://pagertree.com/knowledge-base/automations/"
+
+    Automation:
+      allOf:
+        - $ref: "#/components/schemas/Base"
+        - $ref: "#/components/schemas/AutomationBase"
+    
     EventBase:
       type: "object"
       properties:
@@ -1942,6 +2203,32 @@ components:
               type: "object"
               additionalProperties:
                 type: string
+    
+    LogBase:
+      type: "object"
+      properties:
+        content:
+          type: string
+          description: "The message of the log."
+
+    Log:
+      allOf:
+        - $ref: "#/components/schemas/Base"
+        - $ref: "#/components/schemas/LogBase"
+        - type: "object"
+          properties:
+            type:
+              $ref: "#/components/schemas/LogType"
+            subtype:
+              $ref: "#/components/schemas/LogSubtype"
+            owner_id:
+              type: "string"
+              description: "Who owns this log? Integration Id, Alert Id"
+            source_id:
+              type: "string"
+              description: "Who created the log? System, user id, integration id"
+            level:
+              $ref: "#/components/schemas/LogLevel"
     
     RouterBase:
       type: "object"
@@ -2233,6 +2520,11 @@ components:
       items:
         $ref: "#/components/schemas/Alert"
 
+    ArrayAutomation:
+      type: "array"
+      items:
+        $ref: "#/components/schemas/Automation"
+
     ArrayEvent:
       type: "array"
       items:
@@ -2243,6 +2535,11 @@ components:
       items:
         $ref: "#/components/schemas/Integration"
 
+    ArrayLog:
+      type: "array"
+      items:
+        $ref: "#/components/schemas/Log"
+    
     ArrayRouter:
       type: "array"
       items:
@@ -2277,6 +2574,16 @@ components:
           type: "boolean"
         total_count:
           type: "number"
+
+    PaginatedAutomations:
+      type: "object"
+      properties:
+        data:
+          $ref: "#/components/schemas/ArrayAlert"
+        has_more:
+          type: "boolean"
+        total_count:
+          type: "number"
     
     PaginatedEvents:
       type: "object"
@@ -2298,6 +2605,16 @@ components:
         total_count:
           type: "number"
 
+    PaginatedLogs:
+      type: "object"
+      properties:
+        data:
+          $ref: "#/components/schemas/ArrayLog"
+        has_more:
+          type: "boolean"
+        total_count:
+          type: "number"
+    
     PaginatedRouters:
       type: "object"
       properties:

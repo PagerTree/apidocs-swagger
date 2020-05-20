@@ -605,6 +605,176 @@ paths:
         "5XX":
           $ref: "#/components/responses/InternalServerError"
 
+  /schedule:
+    post:
+      summary: "Create a Schedule"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScheduleBase"
+
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Schedule"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    get:
+      summary: "List all Schedules"
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
+        - $ref: "#/components/parameters/page"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedSchedules"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+
+  /schedule/{id}:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    get:
+      summary: "Retrieve a Schedule"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Schedule"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      summary: "Update a Schedule"
+      responses:
+        "200":
+          description: Success - The resource was updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Schedule"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      summary: "Delete a Schedule"
+      responses:
+        "204":
+          $ref: "#/components/responses/Delete204"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/Delete404"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+  /schedule/{id}/window-events:
+    parameters:
+      - $ref: "#/components/parameters/id"
+      - in: query
+        name: start
+        description: "The unix timestamp of the start of the timeframe"
+        schema:
+          type: "number"
+        required: true
+      - in: query
+        name: end
+        description: "The unix timestamp of the end of the timeframe"
+        schema:
+          type: "number"
+        required: true
+    get:
+      summary: "Get the on-call events for a timeframe"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedEvents"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+  /schedule/{id}/flush:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    delete:
+      summary: "Delets all the events associated with a schedule."
+      responses:
+        "200":
+          description: Success
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+
   /team:
     post:
       summary: "Create a Team"
@@ -1128,6 +1298,24 @@ components:
         - webhook
         - zendesk
 
+    ScheduleType:
+      type: "string"
+      description: "Options for schedule type."
+      enum:
+        - "escalation_policy"
+        - "on_call"
+        - "punch_in_out"
+      default: "on_call"
+
+    TimeUnit:
+      type: "string"
+      enum:
+        - s
+        - m
+        - h
+        - d
+      default: m
+
     NotificationTemplate:
       type: object
       properties:
@@ -1490,6 +1678,50 @@ components:
               additionalProperties:
                 type: string
     
+    ScheduleBase:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "The name of the schedule."
+        type:
+          $ref: '#/components/schemas/ScheduleType'
+        repeat:
+          type: "number"
+          description: "The number of times to repeat the esclation rules"
+          minimum: 0
+          maximum: 3
+        reassign:
+          type: "array"
+          description: "After all the layers, before dropping who should this be reassigned to? An array of those ids."
+          items:
+            type: "string"
+        rules:
+          type: "array"
+          description: "The escalation rules"
+          items:
+            type: "object"
+            properties:
+              color:
+                type: "string"
+                description: "The hex code to display in the UI for this layer."
+              layer:
+                type: "number"
+                minimum: 1
+                description: "The escalation layer of this rule."
+              timeout:
+                type: "number"
+                minimum: 1
+                description: "The scalar of the time unit to wait for this layer."
+              unit:
+                $ref: '#/components/schemas/TimeUnit'
+
+
+    Schedule:
+      allOf:
+        - $ref: "#/components/schemas/Base"
+        - $ref: "#/components/schemas/ScheduleBase"
+    
     TeamBase:
       type: "object"
       properties:
@@ -1678,6 +1910,11 @@ components:
       items:
         $ref: "#/components/schemas/Integration"
 
+    ArraySchedule:
+      type: "array"
+      items:
+        $ref: "#/components/schemas/Schedule"
+    
     ArrayTeam:
       type: "array"
       items:
@@ -1713,6 +1950,16 @@ components:
       properties:
         data:
           $ref: "#/components/schemas/ArrayIntegration"
+        has_more:
+          type: "boolean"
+        total_count:
+          type: "number"
+
+    PaginatedSchedules:
+      type: "object"
+      properties:
+        data:
+          $ref: "#/components/schemas/ArraySchedule"
         has_more:
           type: "boolean"
         total_count:

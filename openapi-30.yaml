@@ -817,6 +817,54 @@ paths:
         "5XX":
           $ref: "#/components/responses/InternalServerError"
   
+  /notifcation:
+    get:
+      summary: "List all notifications"
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
+        - $ref: "#/components/parameters/page"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedNotifications"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+
+  /notification/{id}:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    get:
+      summary: "Retrieve a Notification"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Notification"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+
   /router:
     post:
       summary: "Create a Router"
@@ -1823,6 +1871,42 @@ components:
         - d
       default: m
 
+    NotificationChannel:
+      type: "string"
+      enum:
+        - push
+        - email
+        - sms
+        - voice
+        - slack
+
+    NotificationDirection:
+      type: "string"
+      enum:
+        - "INCOMING"
+        - "OUTGOING"
+      default: "OUTGOING"
+
+    NotificationProvider:
+      type: "string"
+      enum:
+        - fcm
+        - ses
+        - mailgun
+        - postmark
+        - twilio
+        - plivo
+        - nexmo
+        - slack
+    
+    NotificationStatus:
+      type: "string"
+      enum:
+        - failed
+        - sent
+        - received
+        - delivered
+
     NotificationTemplate:
       type: object
       properties:
@@ -2229,6 +2313,75 @@ components:
               description: "Who created the log? System, user id, integration id"
             level:
               $ref: "#/components/schemas/LogLevel"
+
+    NotificationBase:
+      type: "object"
+      properties:
+        thirdparty_id:
+          type: string
+          description: "Provider Id"
+        user_id:
+          type: string
+          description: "The user this notification was routed to."
+
+    Notification:
+      allOf:
+        - $ref: "#/components/schemas/Base"
+        - $ref: "#/components/schemas/NotificationBase"
+        - type: "object"
+          properties:
+            source_id:
+              type: "string"
+              description: "The source of this notification."
+            group_id:
+              type: "string"
+              description: "A group identifier for similary notifications."
+            workflow_id:
+              type: "string"
+              description: "The workflow id that this notification belongs to."
+            stakeholder_id:
+              type: "string"
+              description: "The stakeholder id that this notification belongs to."
+            channel:
+              $ref: "#/components/schemas/NotificationChannel"
+            provider:
+              $ref: "#/components/schemas/NotificationProvider"
+            template:
+              type: "string"
+              description: "The template that was used for this notification."
+            to:
+              type: "string"
+              description: "The to address that this notification was sent to."
+            from:
+              type: "string"
+              description: "The from address this notification was sent from"
+            direction:
+              $ref: '#/components/schemas/NotificationDirection'
+            subject:
+              type: "string"
+              description: "The subject of the notification."
+            message:
+              type: string
+              description: "The message of the notification."
+            cost:
+              type: number
+              description: The amount the notification cost in USD
+            status:
+              $ref: '#/components/schemas/NotificationStatus'
+            provider_status:
+              type: "string"
+              description: "The provider status of the notification."
+            sent:
+              type: number
+              description: "Unix timestamp of when PagerTree sent the notification."
+            delivered:
+              type: number
+              description: "Unix timestamp of when the provider reported the notification was delivered."
+            err:
+              type: array
+              description: "Array of strings describing the error(s)."
+              items:
+                type: string
     
     RouterBase:
       type: "object"
@@ -2539,6 +2692,11 @@ components:
       type: "array"
       items:
         $ref: "#/components/schemas/Log"
+
+    ArrayNotification:
+      type: "array"
+      items:
+        $ref: "#/components/schemas/Notification"
     
     ArrayRouter:
       type: "array"
@@ -2610,6 +2768,16 @@ components:
       properties:
         data:
           $ref: "#/components/schemas/ArrayLog"
+        has_more:
+          type: "boolean"
+        total_count:
+          type: "number"
+
+    PaginatedNotifications:
+      type: "object"
+      properties:
+        data:
+          $ref: "#/components/schemas/ArrayNotification"
         has_more:
           type: "boolean"
         total_count:

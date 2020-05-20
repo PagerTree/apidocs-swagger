@@ -156,7 +156,7 @@ paths:
                   type: array
                   items:
                     type: string
-                    description: 'The alert ids to perform the action on.'
+                    description: "The alert ids to perform the action on."
       responses:
         "200":
           description: Success
@@ -241,7 +241,7 @@ paths:
           $ref: "#/components/responses/TooManyRequests"
         "5XX":
           $ref: "#/components/responses/InternalServerError"
-  
+
   /alert/{id}/acknowledge:
     parameters:
       - $ref: "#/components/parameters/id"
@@ -344,7 +344,7 @@ paths:
 
   /alert/{id}/handoff:
     parameters:
-        - $ref: "#/components/parameters/id"
+      - $ref: "#/components/parameters/id"
     post:
       summary: "Handoff an Alert"
       requestBody:
@@ -514,7 +514,7 @@ paths:
           $ref: "#/components/responses/TooManyRequests"
         "5XX":
           $ref: "#/components/responses/InternalServerError"
-  
+
   /event:
     post:
       summary: "Create an Event"
@@ -628,7 +628,7 @@ paths:
           $ref: "#/components/responses/TooManyRequests"
         "5XX":
           $ref: "#/components/responses/InternalServerError"
-  
+
   /integration:
     post:
       summary: "Create an Integration"
@@ -816,7 +816,7 @@ paths:
           $ref: "#/components/responses/TooManyRequests"
         "5XX":
           $ref: "#/components/responses/InternalServerError"
-  
+
   /notifcation:
     get:
       summary: "List all notifications"
@@ -1291,7 +1291,7 @@ paths:
           $ref: "#/components/responses/TooManyRequests"
         "5XX":
           $ref: "#/components/responses/InternalServerError"
-  
+
   /team:
     post:
       summary: "Create a Team"
@@ -1583,7 +1583,7 @@ paths:
                   type: array
                   items:
                     type: string
-                    description: 'The teams ids to add the user to.'
+                    description: "The teams ids to add the user to."
       responses:
         "200":
           description: Success
@@ -1844,7 +1844,7 @@ components:
         - 4 # DEBUG
         - 5 # SILLY
       default: 2
-    
+
     RouterType:
       type: "string"
       description: "Options for router type."
@@ -1898,7 +1898,7 @@ components:
         - plivo
         - nexmo
         - slack
-    
+
     NotificationStatus:
       type: "string"
       enum:
@@ -1953,7 +1953,7 @@ components:
         name:
           type: "string"
           description: "The name of the account."
-        token_id: 
+        token_id:
           type: "string"
           description: "The unique identifier of the token to use for invites to join the account."
         stripe:
@@ -1986,25 +1986,25 @@ components:
           description: "Notification templates for the different notification alert.subtype"
           properties:
             alert_acknowledged:
-              $ref: '#/components/schemas/NotificationTemplate'
+              $ref: "#/components/schemas/NotificationTemplate"
             alert_alert:
-              $ref: '#/components/schemas/NotificationTemplate'
+              $ref: "#/components/schemas/NotificationTemplate"
             alert_broadcast:
-              $ref: '#/components/schemas/NotificationTemplate'
+              $ref: "#/components/schemas/NotificationTemplate"
             alert_dropped:
-              $ref: '#/components/schemas/NotificationTemplate'
+              $ref: "#/components/schemas/NotificationTemplate"
             alert_handoff:
-              $ref: '#/components/schemas/NotificationTemplate'
+              $ref: "#/components/schemas/NotificationTemplate"
             alert_page:
-              $ref: '#/components/schemas/NotificationTemplate'
+              $ref: "#/components/schemas/NotificationTemplate"
             alert_rejected:
-              $ref: '#/components/schemas/NotificationTemplate'
+              $ref: "#/components/schemas/NotificationTemplate"
             alert_stakeholder:
-              $ref: '#/components/schemas/NotificationTemplate'
+              $ref: "#/components/schemas/NotificationTemplate"
             alert_timeout:
-              $ref: '#/components/schemas/NotificationTemplate'
+              $ref: "#/components/schemas/NotificationTemplate"
             event_goc:
-              $ref: '#/components/schemas/NotificationTemplate'
+              $ref: "#/components/schemas/NotificationTemplate"
     Account:
       allOf:
         - $ref: "#/components/schemas/Base"
@@ -2024,7 +2024,7 @@ components:
         title:
           type: string
           description: "The title of the alert."
-        
+
     Alert:
       allOf:
         - $ref: "#/components/schemas/Base"
@@ -2036,18 +2036,18 @@ components:
               description: "Parent alert id - For grouping and aggregating."
             thirdparty_id:
               type: string
-              description:  "This is set by PagerTree integration during the alert transformation process."
+              description: "This is set by PagerTree integration during the alert transformation process."
             description:
               type: string
               description: "The description of the alert."
             type:
-              $ref: '#/components/schemas/AlertType'
+              $ref: "#/components/schemas/AlertType"
             subtype:
-              $ref: '#/components/schemas/AlertSubtype'
+              $ref: "#/components/schemas/AlertSubtype"
             status:
-              $ref: '#/components/schemas/AlertStatus'
+              $ref: "#/components/schemas/AlertStatus"
             urgency:
-              $ref: '#/components/schemas/AlertUrgency'
+              $ref: "#/components/schemas/AlertUrgency"
             d_team_id:
               type: string
               description: "The team id this alert is assigned to."
@@ -2128,13 +2128,13 @@ components:
               items:
                 type: string
             handoffs:
-              type: array 
+              type: array
               description: "An array of objects contain information regargind handoffs"
               readOnly: true
               items:
                 type: object
                 properties:
-                  to: 
+                  to:
                     type: string
                     description: "The id that the alert is being handed off to."
                   from:
@@ -2146,7 +2146,7 @@ components:
                   acknowledged:
                     description: "The unix timestamp that the previous workflow was acknowledged"
                     type: number
-            bridge_id:  
+            bridge_id:
               type: string
               description: "The id of the bridge that is attached to this bridge"
 
@@ -2168,7 +2168,7 @@ components:
       allOf:
         - $ref: "#/components/schemas/Base"
         - $ref: "#/components/schemas/AutomationBase"
-    
+
     EventBase:
       type: "object"
       properties:
@@ -2192,7 +2192,7 @@ components:
           description: "The unix timestamp of when this event ends."
         repeat:
           type: "boolean"
-          description:  "Is this a repeating event?"
+          description: "Is this a repeating event?"
         timezone:
           type: "string"
           description: "The moment.js timezone"
@@ -2224,10 +2224,10 @@ components:
               type: "string"
               description: "The frequency unit."
               enum:
-              - daily
-              - weekly
-              - monthly
-              - yearly
+                - daily
+                - weekly
+                - monthly
+                - yearly
             repeatend:
               type: "number"
               description: "The unix timezone of the start of the last event (inclusive)."
@@ -2258,7 +2258,6 @@ components:
                   type: string
                   description: "A guid representing which cycle processed this for the going on-call notifications"
 
-    
     IntegrationBase:
       type: "object"
       properties:
@@ -2287,7 +2286,7 @@ components:
               type: "object"
               additionalProperties:
                 type: string
-    
+
     LogBase:
       type: "object"
       properties:
@@ -2356,7 +2355,7 @@ components:
               type: "string"
               description: "The from address this notification was sent from"
             direction:
-              $ref: '#/components/schemas/NotificationDirection'
+              $ref: "#/components/schemas/NotificationDirection"
             subject:
               type: "string"
               description: "The subject of the notification."
@@ -2367,7 +2366,7 @@ components:
               type: number
               description: The amount the notification cost in USD
             status:
-              $ref: '#/components/schemas/NotificationStatus'
+              $ref: "#/components/schemas/NotificationStatus"
             provider_status:
               type: "string"
               description: "The provider status of the notification."
@@ -2382,7 +2381,7 @@ components:
               description: "Array of strings describing the error(s)."
               items:
                 type: string
-    
+
     RouterBase:
       type: "object"
       properties:
@@ -2394,7 +2393,7 @@ components:
           description: "Is this router enabled?"
           default: true
         type:
-          $ref: '#/components/schemas/RouterType'
+          $ref: "#/components/schemas/RouterType"
         default_receiver:
           type: "string"
           description: "The id of the default receiver. Likely a team or a user. Only applicable to type router."
@@ -2406,7 +2405,7 @@ components:
       allOf:
         - $ref: "#/components/schemas/Base"
         - $ref: "#/components/schemas/ScheduleBase"
-    
+
     ScheduleBase:
       type: "object"
       properties:
@@ -2414,7 +2413,7 @@ components:
           type: "string"
           description: "The name of the schedule."
         type:
-          $ref: '#/components/schemas/ScheduleType'
+          $ref: "#/components/schemas/ScheduleType"
         repeat:
           type: "number"
           description: "The number of times to repeat the esclation rules"
@@ -2443,7 +2442,7 @@ components:
                 minimum: 1
                 description: "The scalar of the time unit to wait for this layer."
               unit:
-                $ref: '#/components/schemas/TimeUnit'
+                $ref: "#/components/schemas/TimeUnit"
 
     Schedule:
       allOf:
@@ -2494,7 +2493,7 @@ components:
       allOf:
         - $ref: "#/components/schemas/Base"
         - $ref: "#/components/schemas/StakeholderBase"
-    
+
     TeamBase:
       type: "object"
       properties:
@@ -2614,7 +2613,7 @@ components:
             slack:
               type: object
               readOnly: true
-              description: 'The users Slack connection information'
+              description: "The users Slack connection information"
             router_id:
               type: string
               description: "The notification rules router id"
@@ -2682,7 +2681,7 @@ components:
       type: "array"
       items:
         $ref: "#/components/schemas/Event"
-    
+
     ArrayIntegration:
       type: "array"
       items:
@@ -2697,7 +2696,7 @@ components:
       type: "array"
       items:
         $ref: "#/components/schemas/Notification"
-    
+
     ArrayRouter:
       type: "array"
       items:
@@ -2712,7 +2711,7 @@ components:
       type: "array"
       items:
         $ref: "#/components/schemas/Stakeholder"
-    
+
     ArrayTeam:
       type: "array"
       items:
@@ -2742,7 +2741,7 @@ components:
           type: "boolean"
         total_count:
           type: "number"
-    
+
     PaginatedEvents:
       type: "object"
       properties:
@@ -2782,7 +2781,7 @@ components:
           type: "boolean"
         total_count:
           type: "number"
-    
+
     PaginatedRouters:
       type: "object"
       properties:

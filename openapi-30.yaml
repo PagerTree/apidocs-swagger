@@ -775,6 +775,120 @@ paths:
         "5XX":
           $ref: "#/components/responses/InternalServerError"
 
+  /stakeholder:
+    post:
+      summary: "Create a Stakeholder"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StakholderBase"
+
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Stakeholder"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    get:
+      summary: "List all Stakholders"
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
+        - $ref: "#/components/parameters/page"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedStakeholders"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+
+  /stakeholder/{id}:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    get:
+      summary: "Retrieve a Stakeholder"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Stakeholder"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      summary: "Update a Stakeholder"
+      responses:
+        "200":
+          description: Success - The resource was updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Stakeholder"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      summary: "Delete a Stakeholder"
+      responses:
+        "204":
+          $ref: "#/components/responses/Delete204"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/Delete404"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+  
   /team:
     post:
       summary: "Create a Team"
@@ -1721,6 +1835,51 @@ components:
       allOf:
         - $ref: "#/components/schemas/Base"
         - $ref: "#/components/schemas/ScheduleBase"
+
+    StakholderBase:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "The name of the stakeholder group."
+        enabled:
+          type: boolean
+          description: "Is this stakeholder group enabled?"
+          default: true
+        user_ids:
+          type: "array"
+          description: "Array of user ids that are members of this stake holder group."
+          items:
+            type: "string"
+        emails:
+          type: "array"
+          description: "Array of emails (don't have to be user emails) that are members of this stake holder group."
+          items:
+            type: "string"
+        events:
+          type: object
+          properties:
+            alert_assigned:
+              type: boolean
+              description: "Send notification on alert.assigned event?"
+              default: false
+            alert_acknowledged:
+              type: boolean
+              description: "Send notification on alert.acknowledged event?"
+              default: false
+            alert_resolved:
+              type: boolean
+              description: "Send notification on alert.resolved event?"
+              default: false
+            alert_dropped:
+              type: boolean
+              description: "Send notification on alert.dropped event?"
+              default: false
+
+    Stakeholder:
+      allOf:
+        - $ref: "#/components/schemas/Base"
+        - $ref: "#/components/schemas/TeamStakeholder"
     
     TeamBase:
       type: "object"
@@ -1914,6 +2073,11 @@ components:
       type: "array"
       items:
         $ref: "#/components/schemas/Schedule"
+
+    ArrayStakeholder:
+      type: "array"
+      items:
+        $ref: "#/components/schemas/Stakeholder"
     
     ArrayTeam:
       type: "array"
@@ -1960,6 +2124,16 @@ components:
       properties:
         data:
           $ref: "#/components/schemas/ArraySchedule"
+        has_more:
+          type: "boolean"
+        total_count:
+          type: "number"
+
+    PaginatedStakeholder:
+      type: "object"
+      properties:
+        data:
+          $ref: "#/components/schemas/ArrayStakeholder"
         has_more:
           type: "boolean"
         total_count:

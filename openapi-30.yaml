@@ -3,7 +3,7 @@ openapi: 3.0.0
 info:
   title: PagerTree API YAML
   description: 'This is the Swagger definition file for <a href="https://apidocs.pagertree.com">https://apidocs.pagertree.com</a>. Use this file to generate SDKs.'
-  version: 1.0.0
+  version: 3.0.0
 
 externalDocs:
   description: API Documentation

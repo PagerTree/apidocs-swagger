@@ -377,6 +377,120 @@ paths:
         "5XX":
           $ref: "#/components/responses/InternalServerError"
 
+  /event:
+    post:
+      summary: "Create an Event"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventBase"
+
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    get:
+      summary: "List all Events"
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
+        - $ref: "#/components/parameters/page"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedEvents"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+
+  /event/{id}:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    get:
+      summary: "Retrieve an Event"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      summary: "Update an Event"
+      responses:
+        "200":
+          description: Success - The resource was updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      summary: "Delete an Event"
+      responses:
+        "204":
+          $ref: "#/components/responses/Delete204"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/Delete404"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+  
   /integration:
     post:
       summary: "Create an Integration"
@@ -486,6 +600,168 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/Delete404"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+
+  /team:
+    post:
+      summary: "Create a Team"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamBase"
+
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    get:
+      summary: "List all Teams"
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
+        - $ref: "#/components/parameters/page"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedTeams"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+
+  /team/{id}:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    get:
+      summary: "Retrieve a Team"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      summary: "Update a Team"
+      responses:
+        "200":
+          description: Success - The resource was updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      summary: "Delete a Team"
+      responses:
+        "204":
+          $ref: "#/components/responses/Delete204"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/Delete404"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+  /team/{id}/current-oncall:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    get:
+      summary: "Get the current on-call events for a team"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArrayEvent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+  /team/{id}/members:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    get:
+      summary: "Get the users that belong to this team"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedUsers"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
         "429":
           $ref: "#/components/responses/TooManyRequests"
         "5XX":
@@ -1095,6 +1371,96 @@ components:
               type: string
               description: "The id of the bridge that is attached to this bridge"
 
+    EventBase:
+      type: "object"
+      properties:
+        schedule_id:
+          type: "string"
+          description: "The id of the schedule that this event belongs too."
+        attendees:
+          type: "array"
+          description: "Array of user ids that are attached to this event."
+          items:
+            type: "string"
+          minItems: 1
+        layer:
+          type: "number"
+          description: "The esclation rule layer this event belongs to."
+        start:
+          type: "number"
+          description: "The unix timestamp of when this event starts."
+        end:
+          type: "number"
+          description: "The unix timestamp of when this event ends."
+        repeat:
+          type: "boolean"
+          description:  "Is this a repeating event?"
+        timezone:
+          type: "string"
+          description: "The moment.js timezone"
+
+    Event:
+      allOf:
+        - $ref: "#/components/schemas/Base"
+        - $ref: "#/components/schemas/EventBase"
+        - type: "object"
+          properties:
+            router_id:
+              type: string
+              description: "The router id that processes incoming alerts to this team."
+            schedule_id:
+              type: string
+              description: "The on-call schedule id that belongs to this team."
+            dow:
+              type: array
+              description: "An array of ISO day of the week this event is applicable to repeat on"
+              items:
+                type: "number"
+                minimum: 0
+                maximum: 6
+            frequency:
+              type: "number"
+              description: "The frequency amount."
+              minimum: 1
+            frequency_unit:
+              type: "string"
+              description: "The frequency unit."
+              enum:
+              - daily
+              - weekly
+              - monthly
+              - yearly
+            repeatend:
+              type: "number"
+              description: "The unix timezone of the start of the last event (inclusive)."
+            exceptions:
+              type: "array"
+              description: "Array of exceptions for the repeating sequence."
+              items:
+                type: "object"
+                properties:
+                  start:
+                    type: number
+                    description: "The unix timestamp of the start of the occurence to omit."
+                  event_id:
+                    type: string
+                    description: "(Optional) The event id that replaces this occurence."
+            next:
+              type: "object"
+              readOnly: true
+              description: "The next event to occure. Used by PagerTree for Going On-Call Notifications."
+              properties:
+                start:
+                  type: number
+                  description: "Unix timestamp of the start of the next event."
+                end:
+                  type: number
+                  description: "Unix timestamp of the end of the next event."
+                started:
+                  type: string
+                  description: "A guid representing which cycle processed this for the going on-call notifications"
+
+    
     IntegrationBase:
       type: "object"
       properties:
@@ -1123,6 +1489,43 @@ components:
               type: "object"
               additionalProperties:
                 type: string
+    
+    TeamBase:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "The name of the team."
+        admin_ids:
+          type: "array"
+          description: "Array of user ids that are team admins."
+          items:
+            type: "string"
+          minItems: 1
+        member_user_ids:
+          type: "array"
+          description: "Array of user ids that are members."
+          items:
+            type: "string"
+          minItems: 1
+
+    Team:
+      allOf:
+        - $ref: "#/components/schemas/Base"
+        - $ref: "#/components/schemas/TeamBase"
+        - type: "object"
+          properties:
+            router_id:
+              type: string
+              description: "The router id that processes incoming alerts to this team."
+            schedule_id:
+              type: string
+              description: "The on-call schedule id that belongs to this team."
+            stakeholder_ids:
+              type: array
+              description: "An array of stakeholder ids that are attached to alerts assigned to this team."
+              items:
+                type: "string"
 
     UserBase:
       type: "object"
@@ -1265,10 +1668,20 @@ components:
       items:
         $ref: "#/components/schemas/Alert"
 
+    ArrayEvent:
+      type: "array"
+      items:
+        $ref: "#/components/schemas/Event"
+    
     ArrayIntegration:
       type: "array"
       items:
         $ref: "#/components/schemas/Integration"
+
+    ArrayTeam:
+      type: "array"
+      items:
+        $ref: "#/components/schemas/Team"
 
     ArrayUser:
       type: "array"
@@ -1284,12 +1697,32 @@ components:
           type: "boolean"
         total_count:
           type: "number"
+    
+    PaginatedEvents:
+      type: "object"
+      properties:
+        data:
+          $ref: "#/components/schemas/ArrayEvent"
+        has_more:
+          type: "boolean"
+        total_count:
+          type: "number"
 
     PaginatedIntegrations:
       type: "object"
       properties:
         data:
           $ref: "#/components/schemas/ArrayIntegration"
+        has_more:
+          type: "boolean"
+        total_count:
+          type: "number"
+
+    PaginatedTeams:
+      type: "object"
+      properties:
+        data:
+          $ref: "#/components/schemas/ArrayTeam"
         has_more:
           type: "boolean"
         total_count:

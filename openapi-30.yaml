@@ -605,6 +605,149 @@ paths:
         "5XX":
           $ref: "#/components/responses/InternalServerError"
 
+  /router:
+    post:
+      summary: "Create a Router"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RouterBase"
+
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Router"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    get:
+      summary: "List all Routers"
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
+        - $ref: "#/components/parameters/page"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedRouters"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+
+  /router/{id}:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    get:
+      summary: "Retrieve a Router"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Router"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      summary: "Update a Router"
+      responses:
+        "200":
+          description: Success - The resource was updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Router"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      summary: "Delete a Router"
+      responses:
+        "204":
+          $ref: "#/components/responses/Delete204"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/Delete404"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+  /router/default-template/{type}:
+    parameters:
+      - name: type
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/RouterType"
+    get:
+      summary: "Retrieve a Router"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                description: "The default template string."
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "5XX":
+          $ref: "#/components/responses/InternalServerError"
+
   /schedule:
     post:
       summary: "Create a Schedule"
@@ -783,7 +926,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/StakholderBase"
+              $ref: "#/components/schemas/StakeholderBase"
 
       responses:
         "200":
@@ -1412,6 +1555,14 @@ components:
         - webhook
         - zendesk
 
+    RouterType:
+      type: "string"
+      description: "Options for router type."
+      enum:
+        - "router"
+        - "notification"
+      default: "router"
+
     ScheduleType:
       type: "string"
       description: "Options for schedule type."
@@ -1792,6 +1943,30 @@ components:
               additionalProperties:
                 type: string
     
+    RouterBase:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "The name of the router."
+        enabled:
+          type: boolean
+          description: "Is this router enabled?"
+          default: true
+        type:
+          $ref: '#/components/schemas/RouterType'
+        default_receiver:
+          type: "string"
+          description: "The id of the default receiver. Likely a team or a user. Only applicable to type router."
+        rules:
+          type: "string"
+          description: "YAML definition of the router. See documentation for details: https://pagertree.com/knowledge-base/routers/"
+
+    Router:
+      allOf:
+        - $ref: "#/components/schemas/Base"
+        - $ref: "#/components/schemas/ScheduleBase"
+    
     ScheduleBase:
       type: "object"
       properties:
@@ -1830,13 +2005,12 @@ components:
               unit:
                 $ref: '#/components/schemas/TimeUnit'
 
-
     Schedule:
       allOf:
         - $ref: "#/components/schemas/Base"
         - $ref: "#/components/schemas/ScheduleBase"
 
-    StakholderBase:
+    StakeholderBase:
       type: "object"
       properties:
         name:
@@ -1879,7 +2053,7 @@ components:
     Stakeholder:
       allOf:
         - $ref: "#/components/schemas/Base"
-        - $ref: "#/components/schemas/TeamStakeholder"
+        - $ref: "#/components/schemas/StakeholderBase"
     
     TeamBase:
       type: "object"
@@ -2069,6 +2243,11 @@ components:
       items:
         $ref: "#/components/schemas/Integration"
 
+    ArrayRouter:
+      type: "array"
+      items:
+        $ref: "#/components/schemas/Router"
+
     ArraySchedule:
       type: "array"
       items:
@@ -2119,6 +2298,16 @@ components:
         total_count:
           type: "number"
 
+    PaginatedRouters:
+      type: "object"
+      properties:
+        data:
+          $ref: "#/components/schemas/ArrayRouter"
+        has_more:
+          type: "boolean"
+        total_count:
+          type: "number"
+
     PaginatedSchedules:
       type: "object"
       properties:
@@ -2129,7 +2318,7 @@ components:
         total_count:
           type: "number"
 
-    PaginatedStakeholder:
+    PaginatedStakeholders:
       type: "object"
       properties:
         data:
